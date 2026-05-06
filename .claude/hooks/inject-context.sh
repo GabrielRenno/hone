@@ -4,6 +4,9 @@
 
 set -euo pipefail
 
+# Trigger auto-compact at 50% context usage (~100k tokens) to prevent quality degradation.
+export CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50
+
 if ! command -v git &> /dev/null; then
   exit 0
 fi
@@ -23,6 +26,11 @@ if [[ -d "docs/plans" ]]; then
   fi
 fi
 
+CHECKPOINT=""
+if [[ -f ".claude/checkpoints/current.md" ]]; then
+  CHECKPOINT=$(cat .claude/checkpoints/current.md 2>/dev/null || true)
+fi
+
 # Output goes to stdout and is appended to the user's prompt as context.
 cat << CTX
 <git-context>
@@ -32,5 +40,13 @@ $COMMITS
 $PLANS
 </git-context>
 CTX
+
+if [[ -n "$CHECKPOINT" ]]; then
+  cat << CKPT
+<session-checkpoint>
+$CHECKPOINT
+</session-checkpoint>
+CKPT
+fi
 
 exit 0
