@@ -4,6 +4,15 @@ A Claude Code harness that enforces discipline for shipping production agents. B
 
 Hone solves the gap between "Claude Code can write code" and "Claude Code reliably ships production software" — tight TDD, blocked secrets, automatic formatting, proactive context management, and a structured plan-build-check-score workflow.
 
+## Quick Install
+
+```bash
+cd your-project
+curl -fsSL https://raw.githubusercontent.com/GabrielRenno/hone/main/install.sh | bash
+```
+
+That's it. The installer copies the harness files into your project, makes hooks executable, merges `.gitignore` entries, and tells you what to do next. It won't overwrite existing files.
+
 ---
 
 ## Table of Contents
@@ -25,54 +34,58 @@ Hone solves the gap between "Claude Code can write code" and "Claude Code reliab
 
 ## Installation
 
+### One command (recommended)
+
+```bash
+cd your-project
+curl -fsSL https://raw.githubusercontent.com/GabrielRenno/hone/main/install.sh | bash
+```
+
+The installer:
+- Clones Hone into a temp directory
+- Copies `.claude/`, `docs/`, `evals/`, `CLAUDE.md`, and `.github/workflows/eval.yml`
+- Skips files that already exist (won't overwrite your work)
+- Makes hooks executable
+- Merges `.gitignore` entries
+- Cleans up the temp directory
+
+### Manual install
+
+If you prefer to do it yourself:
+
+```bash
+git clone https://github.com/GabrielRenno/hone.git /tmp/hone
+cp -r /tmp/hone/.claude .
+cp -r /tmp/hone/docs .
+cp -r /tmp/hone/evals .
+cp /tmp/hone/CLAUDE.md .
+mkdir -p .github/workflows && cp /tmp/hone/.github/workflows/eval.yml .github/workflows/
+chmod +x .claude/hooks/*.sh
+rm -rf /tmp/hone
+```
+
+### After installing
+
+```bash
+# 1. Edit CLAUDE.md — replace <project-name>, trim the stack section to match yours
+vi CLAUDE.md
+
+# 2. Verify toolchain
+python3 --version && ruff --version && mypy --version && pytest --version
+
+# 3. Run a smoke test — open Claude Code and type:
+#    /plan add a /healthz endpoint that returns the current server time
+claude
+```
+
+The PRD interview should kick off, ask questions, and write `docs/plans/healthz.md`. Then run `/build healthz` — the test-writer subagent writes failing tests, the main agent implements, hooks format and typecheck, and the Stop hook blocks if anything's red.
+
 ### Prerequisites
 
 - [Claude Code](https://claude.ai/download) installed (`npm install -g @anthropic-ai/claude-code`)
 - `git`, `python3` on your PATH
 - `ruff`, `mypy`, `pytest` (install as dev deps or globally)
 - `gcloud`, `gh` (optional, for GCP deploys and GitHub ops)
-
-### Option 1: Clone and copy into your project
-
-```bash
-git clone https://github.com/GabrielRenno/hone.git
-cd hone
-
-# Copy the harness files into your existing project
-cp -r .claude your-project/
-cp -r docs your-project/
-cp -r evals your-project/
-cp CLAUDE.md your-project/
-cp .github your-project/  # if you don't already have one
-```
-
-### Option 2: Use as a starting point
-
-```bash
-git clone https://github.com/GabrielRenno/hone.git my-project
-cd my-project
-rm -rf .git
-git init
-```
-
-### After copying
-
-```bash
-# 1. Make hooks executable
-chmod +x .claude/hooks/*.sh
-
-# 2. Edit CLAUDE.md — replace <project-name>, trim the stack section to match yours
-vi CLAUDE.md
-
-# 3. Merge the shipped .gitignore with your project's existing one
-cat .gitignore
-
-# 4. Run a smoke test
-claude
-# Then type: /plan add a /healthz endpoint that returns the current server time
-```
-
-The PRD interview should kick off, ask questions, and write `docs/plans/healthz.md`. Then run `/build healthz` — the test-writer subagent writes failing tests, the main agent implements, hooks format and typecheck, and the Stop hook blocks if anything's red.
 
 ---
 
