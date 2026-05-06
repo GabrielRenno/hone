@@ -46,3 +46,17 @@ Full architecture: @docs/architecture.md
 
 ## When you don't know something
 Use the `explorer` subagent for repo navigation. Don't grep blindly from main context.
+
+## Compact Instructions
+When compacting this conversation, always preserve:
+- The current slice being worked on and its acceptance criteria
+- All decisions made (architecture choices, trade-offs, rejected alternatives) and their reasoning
+- File paths that have been modified or are relevant to the current task
+- Current test state (what's passing, what's failing, what's left to write)
+- Any user preferences or corrections expressed during this session
+- The checkpoint file path if one exists (read it for full state)
+
+Discard:
+- Raw file contents that were read for exploration (the files still exist on disk)
+- Verbose tool output (test logs, git diffs, grep results)
+- Intermediate reasoning that led to decisions already captured above
