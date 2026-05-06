@@ -23,6 +23,12 @@ Output format:
 - Follow with file references as `path/to/file.py:42`.
 - Add a one-line summary per file when listing more than three.
 
+Context discipline:
+- Return findings, not raw file contents. The caller can read targeted sections if needed.
+- Good: "The Firestore checkpointer is at `tools/firestore_state.py:15-45`, implements `aput` and `aget_tuple`, uses async client."
+- Bad: pasting the 45 lines of source code into the response.
+- When mapping a subsystem, return the structure summary — not the contents of every file.
+
 Do not:
 - Propose changes (that's the main agent's job).
 - Read files unrelated to the question.
