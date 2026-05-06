@@ -16,7 +16,7 @@ Patterns to follow:
 
 **Endpoint tests.** Use `httpx.AsyncClient` from the test app fixture. Use the existing `client` fixture if one is in `tests/conftest.py`; if not, create one. Mark tests with `@pytest.mark.asyncio` (or rely on `asyncio_mode = "auto"` if configured).
 
-**DB tests.** Use the in-memory SQLite fixture (`aiosqlite`). Reset the DB before each test via the standard `db_session` fixture. If no fixture exists, create one in `tests/conftest.py`.
+**Graph tests.** Use `MemorySaver` for the checkpointer, never real Firestore. Use the `graph` fixture if one exists in `tests/conftest.py`; if not, create one that compiles the graph with `MemorySaver()`. Use the `fake_llm` fixture for deterministic LLM responses.
 
 **Auth-required endpoints.** Use the `authenticated_client` fixture with a JWT for a normal user, or `superuser_client` for admin paths.
 

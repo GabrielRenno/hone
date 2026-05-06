@@ -26,15 +26,17 @@ class AgentState(TypedDict):
 
 Use `Annotated[..., add_messages]` for message lists — LangGraph appends instead of overwriting.
 
-For complex state, prefer Pydantic v2:
+For complex state, prefer Pydantic v2. Use `Annotated[..., add_messages]` for message lists here too:
 
 ```python
+from typing import Annotated
 from pydantic import BaseModel, Field
+from langgraph.graph.message import add_messages
 
 class AgentState(BaseModel):
     user_id: str
     run_id: str
-    messages: list[BaseMessage] = Field(default_factory=list)
+    messages: Annotated[list[BaseMessage], add_messages] = Field(default_factory=list)
     tool_results: list[ToolResult] = Field(default_factory=list)
     final_answer: str | None = None
 

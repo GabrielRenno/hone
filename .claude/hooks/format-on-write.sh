@@ -17,6 +17,6 @@ if ! command -v ruff &> /dev/null; then
 fi
 
 ruff format "$FILE_PATH" 2>&1 | head -5 || true
-ruff check --fix --unsafe-fixes "$FILE_PATH" 2>&1 | head -10 || true
+ruff check --fix "$FILE_PATH" 2>&1 | head -10 || true
 
 exit 0

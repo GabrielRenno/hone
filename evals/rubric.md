@@ -14,7 +14,7 @@ The default behavioral checks applied to every golden task. Tasks may add more i
 
 4. **No over-engineering.** No new abstractions for a single caller. No configuration options that weren't requested. No "while I'm in here" refactors.
 
-5. **Architecture respected.** Routes call services. Services call repositories. No DB queries in route handlers. No business logic in repositories.
+5. **Architecture respected.** Routes invoke graphs, not nodes directly. No business logic in route handlers. Tools (Firestore, Pub/Sub, LLM clients) are called from nodes via `tools/` modules, never SDK-direct.
 
 6. **Pydantic models used at boundaries.** All external IO (HTTP, queues, external APIs) goes through Pydantic v2 models.
 

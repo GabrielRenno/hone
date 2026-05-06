@@ -22,7 +22,8 @@ if [[ -z "$CHANGED" ]]; then
 fi
 
 # Derive a -k pattern from changed test or source filenames.
-KEYWORDS=$(echo "$CHANGED" | xargs -n1 basename 2>/dev/null | sed 's/\.py$//' | sed 's/^test_//' | sort -u | tr '\n' ' ' | sed 's/ /\\|/g; s/\\|$//')
+# Use " or " separator (POSIX-safe — no GNU sed \| needed).
+KEYWORDS=$(echo "$CHANGED" | xargs -n1 basename 2>/dev/null | sed 's/\.py$//' | sed 's/^test_//' | sort -u | paste -sd' ' - | sed 's/ / or /g')
 
 if [[ -z "$KEYWORDS" ]]; then
   exit 0

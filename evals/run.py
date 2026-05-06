@@ -14,7 +14,6 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import shlex
 import shutil
 import subprocess
 import sys
@@ -80,7 +79,7 @@ def _split_h2(text: str) -> dict[str, str]:
 
 def _lines_starting_with(block: str, prefix: str) -> list[str]:
     return [
-        line[len(prefix):].strip()
+        line[len(prefix) :].strip()
         for line in block.splitlines()
         if line.strip().startswith(prefix)
     ]
@@ -137,7 +136,7 @@ def _run_claude_headless(prompt: str) -> int | None:
     """Run Claude Code in headless mode. Returns exit code."""
     try:
         proc = subprocess.run(
-            [CLAUDE_BIN, "-p", prompt],
+            [CLAUDE_BIN, "-p", prompt, "--dangerously-skip-permissions"],
             cwd=ROOT,
             timeout=CLAUDE_TIMEOUT_SEC,
             capture_output=True,
@@ -228,6 +227,19 @@ def _is_source(path: str) -> bool:
     return path.endswith(".py")
 
 
+def _failed_from_last_report() -> set[str] | None:
+    """Read the most recent report and return names of tasks that failed acceptance."""
+    reports = sorted(RUNS_DIR.glob("*.json"))
+    if not reports:
+        return None
+    data = json.loads(reports[-1].read_text())
+    return {
+        r["name"]
+        for r in data.get("results", [])
+        if not all(ok for _, ok in r.get("acceptance", []))
+    }
+
+
 def write_report(results: list[TaskResult]) -> Path:
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -247,6 +259,11 @@ def write_report(results: list[TaskResult]) -> Path:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", help="Run a single task by name (file stem)")
+    parser.add_argument(
+        "--only-failing",
+        action="store_true",
+        help="Re-run only tasks that failed in the most recent report",
+    )
     args = parser.parse_args()
 
     task_files = sorted(TASKS_DIR.glob("*.md"))
@@ -255,6 +272,15 @@ def main() -> int:
         if not task_files:
             sys.stderr.write(f"No task named {args.task!r} in {TASKS_DIR}\n")
             return 1
+    elif args.only_failing:
+        failed_names = _failed_from_last_report()
+        if failed_names is None:
+            sys.stderr.write("No previous report found in evals/runs/\n")
+            return 1
+        task_files = [p for p in task_files if p.stem in failed_names]
+        if not task_files:
+            print("No failing tasks in last report. All green.")
+            return 0
 
     results = [run_task(parse_task(p)) for p in task_files]
     report_path = write_report(results)

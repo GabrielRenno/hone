@@ -11,7 +11,7 @@ Your job is to turn an idea into a written PRD that can drive a TDD implementati
 
 1. **Restate the idea.** In one sentence, what's being built. Confirm with the user before continuing.
 
-2. **Ask 5–8 questions, one at a time.** Cover:
+2. **Ask 15–30 questions, one at a time.** Cover:
    - Who triggers this? (User, system, scheduled)
    - What's the input shape?
    - What's the output shape?

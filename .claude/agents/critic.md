@@ -19,7 +19,7 @@ What to flag:
 
 **Security.** SQL injection vectors. Logged secrets. Trust boundaries crossed without validation. Auth checks missing on protected routes. Pydantic models bypassed.
 
-**Architecture violations.** Business logic in routers. DB access outside repositories. Sync calls in async paths. Tight coupling that breaks the layered architecture.
+**Architecture violations.** Business logic in routers. Direct SDK calls from nodes instead of using `tools/` modules. Routes calling nodes instead of compiled graphs. Sync calls in async paths. Tight coupling that breaks the three-layer architecture (API → Agent → Tools).
 
 What NOT to flag:
 - Formatting, import order, line length (Ruff)
