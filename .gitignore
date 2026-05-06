@@ -1,4 +1,5 @@
 .claude/logs/
+.claude/checkpoints/
 .claude/settings.local.json
 CLAUDE.local.md
 evals/runs/
