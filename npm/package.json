@@ -1,0 +1,25 @@
+{
+  "name": "create-hone",
+  "version": "0.1.0",
+  "description": "Scaffold a Hone harness for Claude Code into your project",
+  "bin": {
+    "create-hone": "./index.mjs"
+  },
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GabrielRenno/hone"
+  },
+  "keywords": [
+    "claude-code",
+    "harness",
+    "langgraph",
+    "fastapi",
+    "tdd",
+    "scaffolding"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

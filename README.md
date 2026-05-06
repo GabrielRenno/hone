@@ -8,7 +8,7 @@ Hone solves the gap between "Claude Code can write code" and "Claude Code reliab
 
 ```bash
 cd your-project
-curl -fsSL https://raw.githubusercontent.com/GabrielRenno/hone/main/install.sh | bash
+npx create-hone@latest
 ```
 
 That's it. The installer copies the harness files into your project, makes hooks executable, merges `.gitignore` entries, and tells you what to do next. It won't overwrite existing files.
@@ -38,6 +38,12 @@ That's it. The installer copies the harness files into your project, makes hooks
 
 ```bash
 cd your-project
+npx create-hone@latest
+```
+
+Or with curl:
+
+```bash
 curl -fsSL https://raw.githubusercontent.com/GabrielRenno/hone/main/install.sh | bash
 ```
 
@@ -571,6 +577,8 @@ Don't install everything on day one. Order matters.
 ```
 .
 ├── CLAUDE.md                              # Root instructions (~60 lines)
+├── install.sh                             # curl | bash installer
+├── npm/                                   # npx create-hone package source
 ├── .gitignore                             # Ignores checkpoints, logs, caches, eval runs
 ├── docs/
 │   ├── architecture.md                    # Three-layer architecture: API → Agent → Tools
